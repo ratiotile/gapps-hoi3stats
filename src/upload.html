@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <?!= include('lua2json'); ?>
+    <base target="_top">
+  </head>
+  <body>
+    <br/>
+    <div id="formDiv">
+      <form id="myForm">
+
+        <input multiple id="file-input" type="file" onchange="handleFiles(this.files)"/><br/>
+
+      </form>
+    </div>
+
+
+  <div id="status">
+    <!-- div will be filled with innerHTML after form submission. -->
+    Select unit files to import from /Hearts of Iron 3/tfh/units
+  </div>
+
+</body>
+
+
+<script>
+
+function updateStatus(msg){
+  document.getElementById('status').textContent = msg
+}
+
+function handleFiles(files) {
+  console.log("uploaded data:", files)
+  updateStatus("Processing...")
+
+  for(var file of files){
+    var reader = new FileReader()
+    reader.onload = function(e){
+
+      console.log(lua2json.parse(e.target.result))
+    }
+    reader.readAsText(file)
+  }
+
+
+
+  //google.script.run
+  //  .withSuccessHandler(updateOutput)
+  //  .processForm(frmData)
+};
+  // Javascript function called by "submit" button handler,
+  // to show results.
+
+  function updateOutput() {
+
+    var outputDiv = document.getElementById('status');
+    outputDiv.innerHTML = "The File was UPLOADED!";
+  }
+
+</script>
+</html>
