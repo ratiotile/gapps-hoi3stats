@@ -25,37 +25,45 @@
 
 <script>
 
-function updateStatus(msg){
-  document.getElementById('status').textContent = msg
-}
+
 
 function handleFiles(files) {
   console.log("uploaded data:", files)
   updateStatus("Processing...")
+  var data = {}
+  var files_processing = files.length
 
   for(var file of files){
     var reader = new FileReader()
     reader.onload = function(e){
-
-      console.log(lua2json.parse(e.target.result))
+      Object.assign(data, lua2json.parse(e.target.result))
+      files_processing -= 1
+      if(files_processing == 0){
+        console.log("complete, call back to apps script")
+        uploadData(data);
+      }
     }
     reader.readAsText(file)
   }
-
-
-
-  //google.script.run
-  //  .withSuccessHandler(updateOutput)
-  //  .processForm(frmData)
 };
+
+function uploadData(data){
+  updateOutput()
+  console.log("upload:", data)
+  google.script.run.processData(data) // server call
+  google.script.host.close() // close upload window
+}
   // Javascript function called by "submit" button handler,
   // to show results.
 
-  function updateOutput() {
+function updateOutput() {
+  var outputDiv = document.getElementById('status');
+  updateStatus("Done!");
+}
 
-    var outputDiv = document.getElementById('status');
-    outputDiv.innerHTML = "The File was UPLOADED!";
-  }
+function updateStatus(msg){
+  document.getElementById('status').textContent = msg
+}
 
 </script>
 </html>
