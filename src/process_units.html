@@ -1,0 +1,67 @@
+<script>
+	var processUnitData = function(data){
+	  var column_names = getColumnNames(data)
+	  var rows = getRows(data, column_names)
+	  return {
+	  	columns: column_names,
+	  	rows: rows
+	  }
+	}
+	console.log("process_units loaded")
+	function getColumnNames(data) {
+		var column_names = ["unit_name"]
+		for(var unit_name in data){
+			if(!data.hasOwnProperty(unit_name)) continue;
+			var unit = data[unit_name]
+			for(var prop in unit){
+				if(!unit.hasOwnProperty(prop)) continue;
+				if(column_names.indexOf(prop) == -1) column_names.push(prop)
+			}
+		}
+		return column_names
+		/*
+		return [
+			"max_strength",
+      "default_organisation",
+      "default_morale",
+      "officers",
+      "build_cost_ic",
+      "build_cost_manpower",
+      "build_time",
+      "repair_cost_multiplier",
+      "maximum_speed",
+      "transport_weight",
+      "supply_consumption",
+      "fuel_consumption",
+      "radio_strength",
+      "defensiveness":,
+      "toughness",
+      "softness",
+      "air_defence",
+      "armor_value",
+      "suppression",
+      "soft_attack",
+      "hard_attack",
+      "air_attack",
+      "ap_attack",
+      "combat_width": 2
+		]*/
+	}
+	function getRows(data, column_names){
+		var rows = []
+		for(var unit_name in data){
+			if(!data.hasOwnProperty(unit_name)) continue;
+			var unit = data[unit_name]
+			rows.push(getRow(unit_name, unit, column_names))
+		}
+		return rows
+	}
+	function getRow(unit_name, unit, column_names){
+		row = [unit_name]
+		for(var i=1; i < column_names.length; ++i){
+			var col = column_names[i]
+			if(unit[col]) row[i] = unit[col]
+		}
+		return row
+	}
+</script>

@@ -2,6 +2,7 @@
 <html>
   <head>
     <?!= include('lua2json'); ?>
+    <?!= include('process_units'); ?>
     <base target="_top">
   </head>
   <body>
@@ -21,14 +22,8 @@
   </div>
 
 </body>
-
-
 <script>
-
-
-
 function handleFiles(files) {
-  console.log("uploaded data:", files)
   updateStatus("Processing...")
   var data = {}
   var files_processing = files.length
@@ -40,7 +35,7 @@ function handleFiles(files) {
       files_processing -= 1
       if(files_processing == 0){
         console.log("complete, call back to apps script")
-        uploadData(data);
+        uploadData(processUnitData(data));
       }
     }
     reader.readAsText(file)
