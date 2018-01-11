@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <?!= include('lua2json'); ?>
+    <?!= include('process_units'); ?>
+    <base target="_top">
+  </head>
+  <body>
+    <br/>
+    <div id="formDiv">
+      <form id="myForm">
+
+        <input multiple id="file-input" type="file" onchange="handleFiles(this.files)"/><br/>
+
+      </form>
+    </div>
+
+
+  <div id="status">
+    <!-- div will be filled with innerHTML after form submission. -->
+    Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies
+  </div>
+
+</body>
+<script>
+function handleFiles(files) {
+  updateStatus("Processing...")
+  var data = {}
+  var files_processing = files.length
+
+  for(var file of files){
+    var reader = new FileReader()
+    reader.onload = function(e){
+      Object.assign(data, lua2json.parse(e.target.result))
+      files_processing -= 1
+      if(files_processing == 0){
+        console.log("complete, call back to apps script")
+        //uploadData(processUnitData(data));
+      }
+    }
+    reader.readAsText(file)
+  }
+};
+
+function uploadData(data){
+  updateOutput()
+  console.log("upload:", data)
+  google.script.run.processData(data) // server call
+  google.script.host.close() // close upload window
+}
+  // Javascript function called by "submit" button handler,
+  // to show results.
+
+function updateOutput() {
+  var outputDiv = document.getElementById('status');
+  updateStatus("Done!");
+}
+
+function updateStatus(msg){
+  document.getElementById('status').textContent = msg
+}
+
+</script>
+</html>

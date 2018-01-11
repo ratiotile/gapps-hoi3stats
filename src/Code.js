@@ -2,6 +2,15 @@ function getUploadHtml(){
   return HtmlService.createTemplateFromFile('upload.html').evaluate()
 }
 
+function getTechUploadHtml(){
+  var temp = HtmlService.createTemplateFromFile('UploadTech.html')
+  temp.data = {
+    text: "",
+    callback: createTechSheet
+  }
+  return temp.evaluate()
+}
+
 // needed to make include work in html files
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename)
@@ -12,6 +21,16 @@ function createUnitSheet(data){
   Logger.log("creating unit sheet")
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.insertSheet("UnitData")
+  sheet.appendRow(data.columns)
+  for(var i=0; i < data.rows.length; ++i){
+    sheet.appendRow(data.rows[i])
+  }
+}
+
+function createTechSheet(data){
+  Logger.log("creating tech sheet")
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = deleteAndCreate(ss, "TechData")
   sheet.appendRow(data.columns)
   for(var i=0; i < data.rows.length; ++i){
     sheet.appendRow(data.rows[i])
