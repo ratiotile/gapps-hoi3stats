@@ -26,10 +26,11 @@ window.addEventListener('load', function(){
 })
 
 function handleFiles(files) {
-  updateStatus("Processing...")
+  updateStatus("Reading files...")
   var data = {}
-  var files_processing = files.length
-
+  //var files_processing = files.length
+  recurseProcessFile(files, 0, data)
+  /*
   for(var file of files){
     var reader = new FileReader()
     reader.onload = function(e){
@@ -43,10 +44,31 @@ function handleFiles(files) {
       }
     }
     reader.readAsText(file)
-  }
+  }*/
 };
 
-function startUpload(table){
+function recurseProcessFile(files, index, data){
+  if(index >= files.length){
+    processAndUpload(data)
+    return
+  }
+  var file = files[index]
+  var reader = new FileReader()
+  reader.onload = function(e){
+    var msg = "running lua2json on " + file.name
+    updateStatus(msg)
+    console.log(msg)
+    var parsed = lua2json.parse(e.target.result)
+    Object.assign(data, parsed)
+    recurseProcessFile(files, index + 1, data)
+  }
+  reader.readAsText(file)
+}
+
+function processAndUpload(data){
+  updateStatus("Files read, processing data...")
+  var table = processDataFunc(data)
+  updateStatus("Done processing, start upload...")
   console.log("starting upload...", table)
   recurseUpload(table, 0)
 }
