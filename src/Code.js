@@ -1,4 +1,5 @@
 function showUnitUploadHtml(){
+  createUnitSheet()
   sharedUpload('UploadUnits.html',
     'Upload unit *.txt files',
     "Select Select unit files from (% HOI3 install dir %)/tfh/units/",
@@ -31,26 +32,25 @@ function include(filename) {
       .getContent();
 }
 
-function createUnitSheet(data){
-  Logger.log("creating unit sheet")
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = deleteAndCreate(ss, "UnitData")
-  sheet.appendRow(data.columns)
-  for(var i=0; i < data.rows.length; ++i){
-    sheet.appendRow(data.rows[i])
-  }
+function createUnitSheet(){
+  deleteAndCreate("UnitData")
 }
 
 // call once, to delete and remake on upload
 function createTechSheet(){
-  Logger.log("creating tech sheet")
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = deleteAndCreate(ss, "TechData")
+  deleteAndCreate("TechData")
+}
+
+function updateUnitSheet(rows){
+  appendRowsToSheet(rows, "UnitData")
 }
 
 function updateTechSheet(rows){
-  Logger.log("updating tech sheet: %s", JSON.stringify(rows))
-  var sheet = getOrCreateSheet("TechData")
+  appendRowsToSheet(rows, "TechData")
+}
+
+function appendRowsToSheet(rows, sheetname){
+  var sheet = getOrCreateSheet(sheetname)
   for(var i=0; i < rows.length; ++i){
     sheet.appendRow(rows[i])
   }
@@ -131,7 +131,8 @@ function findRow(table, row_name){
   }
   return null
 }
-function deleteAndCreate(spreadsheet, sheet_name){
+function deleteAndCreate(sheet_name){
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   // delete if it exists
   var sheet = spreadsheet.getSheetByName(sheet_name)
   if(sheet){
