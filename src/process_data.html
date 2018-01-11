@@ -41,9 +41,15 @@ function getRow(unit_name, unit, column_names){
 	row = [unit_name]
 	for(var i=1; i < column_names.length; ++i){
 		var col = column_names[i]
-		if(unit[col]) row[i] = unit[col]
+		if(unit[col]) row[i] = processValue(unit[col])
 	}
 	return row
+}
+function processValue(value){
+	if(Array.isArray(value)){
+		return value.join(",")
+	}
+	return value
 }
 
 </script>
