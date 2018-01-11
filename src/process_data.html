@@ -11,10 +11,8 @@ function processTechData(data){
 function objectToTable(data, label){
 	var column_names = getColumnNames(data, label)
 	var rows = getRows(data, column_names)
-	return {
-		columns: column_names,
-		rows: rows
-	}
+	var table = [column_names]
+	return table.concat(rows)
 }
 
 console.log("process_units loaded")

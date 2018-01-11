@@ -18,6 +18,8 @@
 </body>
 <script> // Shared functions
 
+var upload_chunksize = 10
+
 window.addEventListener('load', function(){
   // show instructions
   updateStatus(instructions)
@@ -34,15 +36,52 @@ function handleFiles(files) {
       Object.assign(data, lua2json.parse(e.target.result))
       files_processing -= 1
       if(files_processing == 0){
+        updateStatus("Done processing, start upload...")
         console.log("complete, call back to apps script")
         var processed_data = processDataFunc(data)
-        uploadData(processed_data);
+        startUpload(processed_data)
+        //uploadData(processed_data);
       }
     }
     reader.readAsText(file)
   }
 };
 
+function startUpload(table){
+  console.log("starting upload...", table)
+  recurseUpload(table, 0)
+}
+
+/** Upload the processed data table in chunks governed by upload_chunksize.
+Closes the upload window when done.
+*/
+function recurseUpload(table, start_index){
+  var end_index = Math.min(start_index + upload_chunksize, table.length)
+  if(start_index >= table.length){
+    updateStatus("Upload complete!")
+    console.log("Done uploading all files!")
+    google.script.host.close()
+    return
+  }
+  var msg = ["uploading rows", start_index, "-", end_index, "of", table.length
+    ].join(" ")
+  updateStatus(msg)
+  console.log(msg)
+  uploadRows(table, start_index, end_index, function(){
+    console.log("success called back!")
+    recurseUpload(table, end_index)
+  })
+}
+
+/** Uploads rows from start, up to but not including end.
+*/
+function uploadRows(table, start, end, onSuccess){
+  var selection = table.slice(start, end)
+  google.script.run
+    .withSuccessHandler(onSuccess)[server_callback_name](selection)
+}
+
+// old upload function
 function uploadData(data){
   updateOutput()
   console.log("upload:", data)

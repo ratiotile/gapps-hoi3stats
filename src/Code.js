@@ -7,6 +7,7 @@ function showUnitUploadHtml(){
 }
 
 function showTechUploadHtml(){
+  createTechSheet()
   sharedUpload('UploadTech.html',
     'Upload technologies and doctrine *.txt files',
     "Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies/",
@@ -40,13 +41,18 @@ function createUnitSheet(data){
   }
 }
 
-function createTechSheet(data){
+// call once, to delete and remake on upload
+function createTechSheet(){
   Logger.log("creating tech sheet")
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = deleteAndCreate(ss, "TechData")
-  sheet.appendRow(data.columns)
-  for(var i=0; i < data.rows.length; ++i){
-    sheet.appendRow(data.rows[i])
+}
+
+function updateTechSheet(rows){
+  Logger.log("updating tech sheet: %s", JSON.stringify(rows))
+  var sheet = getOrCreateSheet("TechData")
+  for(var i=0; i < rows.length; ++i){
+    sheet.appendRow(rows[i])
   }
 }
 
@@ -132,5 +138,13 @@ function deleteAndCreate(spreadsheet, sheet_name){
     spreadsheet.deleteSheet(sheet)
   }
   sheet = spreadsheet.insertSheet(sheet_name)
+  return sheet
+}
+function getOrCreateSheet(sheet_name){
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName(sheet_name)
+  if(sheet === null){
+    sheet = spreadsheet.insertSheet(sheet_name)
+  }
   return sheet
 }
