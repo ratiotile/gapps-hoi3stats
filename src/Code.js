@@ -52,7 +52,9 @@ function calculateAirUnits(){
 
     // add unit information to row array, then append to table
     for(var j=0; j < columnIndices.length; ++j){
-      row.push(sourceRow[columnIndices[j]])
+      var value = sourceRow[columnIndices[j]]
+      if(value == "") value = 0
+      row.push(value)
     }
     airUnits.push(row)
   }
