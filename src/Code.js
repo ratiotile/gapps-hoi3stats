@@ -1,25 +1,27 @@
-function getUploadHtml(){
-  return HtmlService.createTemplateFromFile('upload.html').evaluate()
-}
-
 function showUnitUploadHtml(){
-  var temp = HtmlService.createTemplateFromFile('UploadUnits.html')
-  temp.template_data = {
-    text: "Select unit files from (% HOI3 install dir %)/tfh/units/",
-    callback: "postUnits" // passthrough in bound script to createUnitSheet
-  }
-  var html = temp.evaluate()
-  SpreadsheetApp.getUi().showModalDialog(html, 'Upload unit *.txt files')
+  sharedUpload('UploadUnits.html',
+    'Upload unit *.txt files',
+    "Select Select unit files from (% HOI3 install dir %)/tfh/units/",
+    "postUnits" // passthrough in bound script to createUnitSheet
+  )
 }
 
 function showTechUploadHtml(){
-  var temp = HtmlService.createTemplateFromFile('UploadTech.html')
+  sharedUpload('UploadTech.html',
+    'Upload technologies and doctrine *.txt files',
+    "Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies/",
+    "postTechs" // passthrough in bound script to createTechSheet
+  )
+}
+
+function sharedUpload(filename, title, instructions, callback){
+  var temp = HtmlService.createTemplateFromFile(filename)
   temp.template_data = {
-    text: "Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies/",
-    callback: "postTechs" // passthrough in bound script to createTechSheet
+    text: instructions,
+    callback: callback
   }
   var html = temp.evaluate()
-  SpreadsheetApp.getUi().showModalDialog(html, 'Upload technologies and doctrine *.txt files')
+  SpreadsheetApp.getUi().showModalDialog(html, title)
 }
 
 // needed to make include work in html files
