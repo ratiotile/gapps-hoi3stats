@@ -1,12 +1,7 @@
 <script>
 // TODO: refactor to match processTechData
 var processUnitData = function(data){
-  var column_names = getColumnNames(data, "unit_name")
-  var rows = getRows(data, column_names)
-  return {
-  	columns: column_names,
-  	rows: rows
-  }
+  return objectToTable(data, "unit_name")
 }
 
 function processTechData(data){

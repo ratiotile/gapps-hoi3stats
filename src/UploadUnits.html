@@ -12,7 +12,7 @@ This pattern is needed because google app scripts don't support templates
 recursively including other templates, so we put all template variables on the
 top level. They are accessed within UploadTemplate
 */
-var processDataFunc = <?!= "processTechData" ?>;
+var processDataFunc = <?!= "processUnitData" ?>;
 // text to appear under the file selector
 var instructions = "<?= template_data.text ?>"
 // name of script to call on server when done processing files

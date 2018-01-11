@@ -2,6 +2,16 @@ function getUploadHtml(){
   return HtmlService.createTemplateFromFile('upload.html').evaluate()
 }
 
+function showUnitUploadHtml(){
+  var temp = HtmlService.createTemplateFromFile('UploadUnits.html')
+  temp.template_data = {
+    text: "Select unit files from (% HOI3 install dir %)/tfh/units/",
+    callback: "postUnits" // passthrough in bound script to createUnitSheet
+  }
+  var html = temp.evaluate()
+  SpreadsheetApp.getUi().showModalDialog(html, 'Upload unit *.txt files')
+}
+
 function showTechUploadHtml(){
   var temp = HtmlService.createTemplateFromFile('UploadTech.html')
   temp.template_data = {
@@ -21,7 +31,7 @@ function include(filename) {
 function createUnitSheet(data){
   Logger.log("creating unit sheet")
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.insertSheet("UnitData")
+  var sheet = deleteAndCreate(ss, "UnitData")
   sheet.appendRow(data.columns)
   for(var i=0; i < data.rows.length; ++i){
     sheet.appendRow(data.rows[i])
