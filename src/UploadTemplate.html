@@ -28,23 +28,7 @@ window.addEventListener('load', function(){
 function handleFiles(files) {
   updateStatus("Reading files...")
   var data = {}
-  //var files_processing = files.length
   recurseProcessFile(files, 0, data)
-  /*
-  for(var file of files){
-    var reader = new FileReader()
-    reader.onload = function(e){
-      Object.assign(data, lua2json.parse(e.target.result))
-      files_processing -= 1
-      if(files_processing == 0){
-        updateStatus("Done processing, start upload...")
-        console.log("complete, call back to apps script")
-        var processed_data = processDataFunc(data)
-        startUpload(processed_data)
-      }
-    }
-    reader.readAsText(file)
-  }*/
 };
 
 function recurseProcessFile(files, index, data){
