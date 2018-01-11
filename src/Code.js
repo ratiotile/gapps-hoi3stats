@@ -1,18 +1,18 @@
 function showUnitUploadHtml(){
-  createUnitSheet()
+  deleteAndCreate("UnitData")
   sharedUpload('UploadUnits.html',
     'Upload unit *.txt files',
     "Select Select unit files from (% HOI3 install dir %)/tfh/units/",
-    "postUnits" // passthrough in bound script to createUnitSheet
+    "postUnits" // passthrough in bound script to updateUnitSheet
   )
 }
 
 function showTechUploadHtml(){
-  createTechSheet()
+  deleteAndCreate("TechData")
   sharedUpload('UploadTech.html',
     'Upload technologies and doctrine *.txt files',
     "Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies/",
-    "postTechs" // passthrough in bound script to createTechSheet
+    "postTechs" // passthrough in bound script to updateTechSheet
   )
 }
 
@@ -31,20 +31,11 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename)
       .getContent();
 }
-
-function createUnitSheet(){
-  deleteAndCreate("UnitData")
-}
-
-// call once, to delete and remake on upload
-function createTechSheet(){
-  deleteAndCreate("TechData")
-}
-
+// called from postUnit in bound script
 function updateUnitSheet(rows){
   appendRowsToSheet(rows, "UnitData")
 }
-
+// called from postTech in bound script
 function updateTechSheet(rows){
   appendRowsToSheet(rows, "TechData")
 }

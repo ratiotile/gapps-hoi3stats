@@ -40,7 +40,6 @@ function handleFiles(files) {
         console.log("complete, call back to apps script")
         var processed_data = processDataFunc(data)
         startUpload(processed_data)
-        //uploadData(processed_data);
       }
     }
     reader.readAsText(file)
@@ -79,19 +78,6 @@ function uploadRows(table, start, end, onSuccess){
   var selection = table.slice(start, end)
   google.script.run
     .withSuccessHandler(onSuccess)[server_callback_name](selection)
-}
-
-// old upload function
-function uploadData(data){
-  updateOutput()
-  console.log("upload:", data)
-  google.script.run[server_callback_name](data) // server call
-  google.script.host.close() // close upload window
-}
-
-function updateOutput() {
-  var outputDiv = document.getElementById('status');
-  updateStatus("Done!");
 }
 
 function updateStatus(msg){
