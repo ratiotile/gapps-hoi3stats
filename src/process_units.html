@@ -1,40 +1,56 @@
 <script>
-	var processUnitData = function(data){
-	  var column_names = getColumnNames(data)
-	  var rows = getRows(data, column_names)
-	  return {
-	  	columns: column_names,
-	  	rows: rows
-	  }
+// TODO: refactor to match processTechData
+var processUnitData = function(data){
+  var column_names = getColumnNames(data, "unit_name")
+  var rows = getRows(data, column_names)
+  return {
+  	columns: column_names,
+  	rows: rows
+  }
+}
+
+function processTechData(data){
+	return objectToTable(data, "tech_name")
+}
+
+function objectToTable(data, label){
+	var column_names = getColumnNames(data, label)
+	var rows = getRows(data, column_names)
+	return {
+		columns: column_names,
+		rows: rows
 	}
-	console.log("process_units loaded")
-	function getColumnNames(data) {
-		var column_names = ["unit_name"]
-		for(var unit_name in data){
-			if(!data.hasOwnProperty(unit_name)) continue;
-			var unit = data[unit_name]
-			for(var prop in unit){
-				if(!unit.hasOwnProperty(prop)) continue;
-				if(column_names.indexOf(prop) == -1) column_names.push(prop)
-			}
+}
+
+console.log("process_units loaded")
+function getColumnNames(data, label) {
+	var column_names = [label]
+	for(var unit_name in data){
+		if(!data.hasOwnProperty(unit_name)) continue;
+		var unit = data[unit_name]
+		for(var prop in unit){
+			if(!unit.hasOwnProperty(prop)) continue;
+			if(column_names.indexOf(prop) == -1) column_names.push(prop)
 		}
-		return column_names
 	}
-	function getRows(data, column_names){
-		var rows = []
-		for(var unit_name in data){
-			if(!data.hasOwnProperty(unit_name)) continue;
-			var unit = data[unit_name]
-			rows.push(getRow(unit_name, unit, column_names))
-		}
-		return rows
+	return column_names
+}
+function getRows(data, column_names){
+	var rows = []
+	for(var unit_name in data){
+		if(!data.hasOwnProperty(unit_name)) continue;
+		var unit = data[unit_name]
+		rows.push(getRow(unit_name, unit, column_names))
 	}
-	function getRow(unit_name, unit, column_names){
-		row = [unit_name]
-		for(var i=1; i < column_names.length; ++i){
-			var col = column_names[i]
-			if(unit[col]) row[i] = unit[col]
-		}
-		return row
+	return rows
+}
+function getRow(unit_name, unit, column_names){
+	row = [unit_name]
+	for(var i=1; i < column_names.length; ++i){
+		var col = column_names[i]
+		if(unit[col]) row[i] = unit[col]
 	}
+	return row
+}
+
 </script>

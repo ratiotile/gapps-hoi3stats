@@ -2,13 +2,14 @@ function getUploadHtml(){
   return HtmlService.createTemplateFromFile('upload.html').evaluate()
 }
 
-function getTechUploadHtml(){
+function showTechUploadHtml(){
   var temp = HtmlService.createTemplateFromFile('UploadTech.html')
-  temp.data = {
-    text: "",
-    callback: createTechSheet
+  temp.template_data = {
+    text: "Select tech/doctrine files from (% HOI3 install dir %)/tfh/technologies/",
+    callback: "postTechs" // passthrough in bound script to createTechSheet
   }
-  return temp.evaluate()
+  var html = temp.evaluate()
+  SpreadsheetApp.getUi().showModalDialog(html, 'Upload technologies and doctrine *.txt files')
 }
 
 // needed to make include work in html files

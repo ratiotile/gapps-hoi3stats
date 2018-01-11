@@ -1,0 +1,63 @@
+<!-- Shared between Unit and Tech upload -->
+<head>
+  <base target="_top">
+</head>
+<body>
+  <br/>
+  <div id="formDiv">
+    <form id="myForm">
+      <input multiple id="file-input" type="file"
+        onchange="handleFiles(this.files)"/>
+      <br/>
+    </form>
+  </div>
+  <div id="status">
+    <!-- div will be filled with innerHTML after form submission. -->
+
+  </div>
+</body>
+<script> // Shared functions
+
+window.addEventListener('load', function(){
+  // show instructions
+  updateStatus(instructions)
+})
+
+function handleFiles(files) {
+  updateStatus("Processing...")
+  var data = {}
+  var files_processing = files.length
+
+  for(var file of files){
+    var reader = new FileReader()
+    reader.onload = function(e){
+      Object.assign(data, lua2json.parse(e.target.result))
+      files_processing -= 1
+      if(files_processing == 0){
+        console.log("complete, call back to apps script")
+        var processed_data = processDataFunc(data)
+        uploadData(processed_data);
+      }
+    }
+    reader.readAsText(file)
+  }
+};
+
+function uploadData(data){
+  updateOutput()
+  console.log("upload:", data)
+  google.script.run[server_callback_name](data) // server call
+  google.script.host.close() // close upload window
+}
+
+function updateOutput() {
+  var outputDiv = document.getElementById('status');
+  updateStatus("Done!");
+}
+
+function updateStatus(msg){
+  document.getElementById('status').textContent = msg
+}
+
+
+</script>
